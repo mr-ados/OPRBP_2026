@@ -1,0 +1,43 @@
+erDiagram
+    COUNTRY ||--o{ REGION : contains
+    REGION ||--o{ CITY : contains
+    CITY ||--o{ EVENT : hosts
+    EVENT ||--o{ FIGHT : contains
+    WEIGHT_CLASS ||--o{ FIGHT : classifies
+    FIGHT_FORMAT ||--o{ FIGHT : schedules
+    VICTORY_METHOD ||--o{ VICTORY_DETAIL : has
+    VICTORY_DETAIL ||--o{ FIGHT : explains
+    REFEREE ||--o{ FIGHT : officiates
+    STANCE ||--o{ FIGHTER : describes
+    FIGHTER ||--|| FIGHTER_CAREER_STATS : has
+    FIGHT ||--o{ FIGHT_PARTICIPANT : includes
+    FIGHTER ||--o{ FIGHT_PARTICIPANT : competes
+    FIGHT_PARTICIPANT ||--|| FIGHT_PERFORMANCE_STATS : records
+    FIGHT_PARTICIPANT ||--|| FIGHT_STRIKE_BREAKDOWN : records
+
+    COUNTRY {
+      int country_id PK
+      nvarchar country_name
+    }
+    EVENT {
+      varchar event_id PK
+      nvarchar event_name
+      date event_date
+      int city_id FK
+    }
+    FIGHT {
+      varchar fight_id PK
+      varchar event_id FK
+      int weight_class_id FK
+      varchar winner_fighter_id FK
+    }
+    FIGHTER {
+      varchar fighter_id PK
+      nvarchar fighter_name
+      int stance_id FK
+    }
+    FIGHT_PARTICIPANT {
+      varchar fight_id PK,FK
+      varchar corner_color PK
+      varchar fighter_id FK
+    }
