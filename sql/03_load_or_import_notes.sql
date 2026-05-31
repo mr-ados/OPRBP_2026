@@ -10,7 +10,7 @@ GO
 SET NOCOUNT ON;
 GO
 
-DECLARE @RawDataPath NVARCHAR(4000) = N'C:\Users\mario\Documents\PMF\4. Godina\OPRBP\projekt-UFC\data\raw\';
+DECLARE @RawDataPath NVARCHAR(4000) = N'C:\SQLImport\UFC\';
 DECLARE @FilePath NVARCHAR(4000);
 DECLARE @Sql NVARCHAR(MAX);
 
