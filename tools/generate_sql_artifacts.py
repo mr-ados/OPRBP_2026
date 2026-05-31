@@ -332,7 +332,7 @@ def sql_01_create_schema() -> str:
         loaded_at DATETIME2(0) NOT NULL CONSTRAINT DF_Fighter_loaded_at DEFAULT SYSUTCDATETIME(),
         CONSTRAINT FK_Fighter_Stance FOREIGN KEY (stance_id) REFERENCES ref.Stance(stance_id),
         CONSTRAINT CK_Fighter_height CHECK (height_cm IS NULL OR height_cm BETWEEN 100 AND 230),
-        CONSTRAINT CK_Fighter_weight CHECK (weight_kg IS NULL OR weight_kg BETWEEN 35 AND 180),
+        CONSTRAINT CK_Fighter_weight CHECK (weight_kg IS NULL OR weight_kg BETWEEN 35 AND 400),
         CONSTRAINT CK_Fighter_reach CHECK (reach_cm IS NULL OR reach_cm BETWEEN 100 AND 240)
     );
 
