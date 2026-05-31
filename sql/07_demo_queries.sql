@@ -85,6 +85,10 @@ BEGIN TRANSACTION;
     WHERE referee_name = N'Demo Referee Updated';
 ROLLBACK TRANSACTION;
 
+--SELECT * 
+--FROM ref.Referee
+--WHERE referee_name LIKE N'Herb%'
+
 -- 8) Pick one event with many finishes for the next two event-specific queries.
 DECLARE @FinishEventId VARCHAR(32) =
 (
