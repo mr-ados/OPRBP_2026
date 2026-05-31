@@ -1,12 +1,12 @@
 /*
     UFC_OPRBP - 03_load_tsv_compatible.sql
 
-    Use this instead of 03_load_or_import_notes.sql if BULK INSERT with
+    TSV-compatible importer for local SQL Server setups where BULK INSERT with
     FORMAT='CSV' fails with Msg 7301 / IID_IColumnsInfo.
 
     Steps:
     1) Run tools/prepare_tsv_for_sqlserver.py if TSV files do not exist.
-    2) Copy data/processed/tsv/*.tsv to C:\SQLImport\UFC\.
+    2) Copy data/processed/tsv/'*'.tsv to C:\SQLImport\UFC\.
     3) Make sure SQL Server service can read that folder.
     4) Run this script.
 */
