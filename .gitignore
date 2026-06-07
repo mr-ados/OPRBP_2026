@@ -21,3 +21,4 @@ docs/img/rendered/
 # Python/tool caches
 __pycache__/
 .pytest_cache/
+
