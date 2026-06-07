@@ -8,6 +8,7 @@
 *.doc
 *.docx
 *.docx#
+*.odt
 docs/obrana-biljeske.md
 tools/
 
