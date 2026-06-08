@@ -11,6 +11,7 @@
 *.odt
 docs/obrana-biljeske.md
 tools/
+predaj_seminar/
 
 # Generated QA/render output
 docs/rendered/

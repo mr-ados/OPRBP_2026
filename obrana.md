@@ -882,16 +882,62 @@ Projekt koristi tri glavna viewa:
 Primjer korištenja viewa:
 
 ```sql
-SELECT TOP (20) *
-FROM ufc.v_event_results
-ORDER BY event_date DESC, fight_id DESC;
+DECLARE @FinishEventId VARCHAR(32) =
+(
+    SELECT TOP (1)
+        event_id
+    FROM ufc.v_event_results
+    WHERE method IS NOT NULL
+      AND method <> N'Decision'
+      AND method <> N'Overturned'
+    GROUP BY event_id
+    ORDER BY COUNT(*) DESC, MAX(event_date) DESC
+);
+
+CREATE VIEW ufc.v_event_results
+AS
+SELECT
+    e.event_id,
+    e.event_name,
+    e.event_date,
+    e.location_raw,
+    city = c.city_name,
+    region = r.region_name,
+    country = co.country_name,
+    f.fight_id,
+    wc.division_name,
+    f.is_title_fight,
+    scheduled_rounds = f.total_rounds,
+    f.finish_round,
+    f.match_time_sec,
+    method = vm.method_name,
+    method_detail = vd.detail_name,
+    referee = rr.referee_name,
+    red_fighter = red_f.fighter_name,
+    blue_fighter = blue_f.fighter_name,
+    winner = win_f.fighter_name,
+    f.is_draw_or_no_contest
+FROM ufc.Fight f
+INNER JOIN ufc.Event e ON e.event_id = f.event_id
+LEFT JOIN geo.City c ON c.city_id = e.city_id
+LEFT JOIN geo.Region r ON r.region_id = c.region_id
+LEFT JOIN geo.Country co ON co.country_id = r.country_id
+LEFT JOIN ref.WeightClass wc ON wc.weight_class_id = f.weight_class_id
+LEFT JOIN ref.VictoryMethod vm ON vm.victory_method_id = f.victory_method_id
+LEFT JOIN ref.VictoryDetail vd ON vd.victory_detail_id = f.victory_detail_id
+LEFT JOIN ref.Referee rr ON rr.referee_id = f.referee_id
+LEFT JOIN ufc.FightParticipant red ON red.fight_id = f.fight_id AND red.corner_color = 'Red'
+LEFT JOIN ufc.Fighter red_f ON red_f.fighter_id = red.fighter_id
+LEFT JOIN ufc.FightParticipant blue ON blue.fight_id = f.fight_id AND blue.corner_color = 'Blue'
+LEFT JOIN ufc.Fighter blue_f ON blue_f.fighter_id = blue.fighter_id
+LEFT JOIN ufc.Fighter win_f ON win_f.fighter_id = f.winner_fighter_id;
 ```
 
 Objašnjenje:
 
 ```text
 View olakšava demonstraciju jer skriva dugačke JOIN upite i daje čitljiv prikaz
-rezultata.
+rezultata. Korišten je view u 6.9. zadatku iznad, trenutni view vraća event s najvećim brojem borbi koje nisu otišle na bodove.
 ```
 
 ### 7.2 Trigger i audit
@@ -980,10 +1026,7 @@ jedna cjelina. Ako se promjena ne potvrdi, stanje baze ostaje nepromijenjeno.
 
 Procedure u projektu:
 
-- `ufc.sp_get_event_fights` - dohvat borbi po eventu ili nazivu eventa.
-- `ufc.sp_compare_fighters` - usporedba dva borca.
 - `ufc.sp_fights_paging` - straničenje rezultata pomoću `OFFSET/FETCH`.
-- `ufc.sp_update_fight_result` - transakcijska promjena rezultata borbe.
 - `ufc.sp_get_event_card_json` - JSON export event carda.
 - `ufc.sp_import_fight_result_json` - JSON input i poziv transakcijske procedure.
 
@@ -1005,6 +1048,8 @@ BEGIN
     OFFSET @skip ROWS
     FETCH NEXT @getRows ROWS ONLY;
 END;
+
+EXEC ufc.sp_fights_paging @division_name = N'lightweight', @skip = 0, @getRows = 10;
 ```
 
 ### 7.5 JSON
